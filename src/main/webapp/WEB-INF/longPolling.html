@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+    <div>
+        <button id="startBtn">Start</button>
+        <button id="stopBtn">Stop</button>
+    </div>
+    <div id="status"></div>
+    <div id="errors"></div>
+    <div id="data"></div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="assets/js/libs/json2.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var xhr = null,
+                pollingActive = true,
+                startBtn = $('#startBtn'),
+                stopBtn = $('#stopBtn'),
+                status = $('#status'),
+                errors = $('#errors'),
+                data = $('#data');
+
+            function poll() {
+                if (!pollingActive) return;
+
+                xhr = $.ajax({
+                    type: "GET",
+                    url: '/messages/watch',
+                    success: function (response) {
+                        errors.html('');
+                        data.html('data: ' + JSON.stringify(response));
+                        poll();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        data.html('');
+                        errors.html(
+                                'textStatus: ' + JSON.stringify(textStatus) + '<br />',
+                                'errorThrown: ' + JSON.stringify(errorThrown) + '<br />'
+                        )
+                        stopPolling();
+                    }
+                });
+            }
+
+            function stopPolling() {
+                pollingActive = false;
+                xhr.abort();
+                xhr = null;
+                status.html('Polling stopped');
+                startBtn.show();
+                stopBtn.hide();
+                data.html('');
+                errors.html('');
+            }
+
+            function startPolling() {
+                startBtn.hide();
+                pollingActive = true;
+                poll();
+                stopBtn.show();
+                status.html('');
+                errors.html('');
+            }
+
+            startBtn.click(startPolling);
+            stopBtn.click(stopPolling);
+        });
+    </script>
+</body>
+</html>
