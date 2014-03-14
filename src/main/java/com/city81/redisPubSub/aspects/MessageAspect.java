@@ -1,4 +1,4 @@
-package com.city81.redisPubSub.springaspects;
+package com.city81.redisPubSub.aspects;
 
 import com.city81.redisPubSub.model.Message;
 

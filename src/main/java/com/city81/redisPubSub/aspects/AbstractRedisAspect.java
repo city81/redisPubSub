@@ -1,4 +1,4 @@
-package com.city81.redisPubSub.springaspects;
+package com.city81.redisPubSub.aspects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
